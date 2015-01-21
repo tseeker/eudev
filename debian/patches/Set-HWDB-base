@@ -1,0 +1,18 @@
+Description: Set HWDB path
+ Modify configure.ac in order to install HWDB to /lib/udev instead of
+ /etc/udev.
+Author: Emmanuel Benoit <ebenoit@ebenoit.info>
+
+--- eudev-2.1.1.orig/configure.ac
++++ eudev-2.1.1/configure.ac
+@@ -154,8 +154,8 @@ AC_SUBST([udevlibexecdir], [${rootlibexe
+ # sysconfdir paths
+ AC_SUBST([udevconfdir],[${sysconfdir}/udev])
+ AC_SUBST([udevconffile],[${udevconfdir}/udev.conf])
+-AC_SUBST([udevhwdbdir],[${udevconfdir}/hwdb.d])
+-AC_SUBST([udevhwdbbin],[${udevconfdir}/hwdb.bin])
++AC_SUBST([udevhwdbdir],[${udevlibexecdir}/hwdb.d])
++AC_SUBST([udevhwdbbin],[${udevlibexecdir}/hwdb.bin])
+ 
+ # udevlibexecdir paths
+ AC_SUBST([udevkeymapdir],[${udevlibexecdir}/keymaps])

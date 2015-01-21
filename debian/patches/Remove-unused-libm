@@ -1,0 +1,31 @@
+Description: Remove unnecessary dependency on libm
+ The upstream configure.ac checks for sqrt in libm, introducing a
+ dependency which, as far as I can tell, serves absolutely no purpose.
+ .
+ This patch removes the dependency.
+
+Author: Emmanuel Benoit <ebenoit@ebenoit.info>
+
+diff --git a/configure.ac b/configure.ac
+index dbca833..4f0e549 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -99,7 +99,7 @@ AC_CHECK_FUNCS(
+         [AC_MSG_ERROR([*** POSIX function not found])]
+ )
+ AC_SEARCH_LIBS([clock_gettime], [rt], [], [AC_MSG_ERROR([*** POSIX librt not found])])
+-AC_SEARCH_LIBS([sqrt], [m], [], [AC_MSG_ERROR([*** POSIX libm not found])])
++LT_LIB_M
+ 
+ # ------------------------------------------------------------------------------
+ 
+diff --git a/src/accelerometer/Makefile.am b/src/accelerometer/Makefile.am
+index 983cf00..3d64842 100644
+--- a/src/accelerometer/Makefile.am
++++ b/src/accelerometer/Makefile.am
+@@ -13,4 +13,4 @@ accelerometer_SOURCES = \
+ accelerometer_LDADD = \
+ 	$(top_builddir)/src/libudev/libudev-private.la \
+ 	$(top_builddir)/src/udev/libudev-core.la \
+-	-lm
++	$(LIBM)

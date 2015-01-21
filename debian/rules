@@ -1,0 +1,96 @@
+#!/usr/bin/make -f
+# See debhelper(7) (uncomment to enable)
+# output every command that modifies files on the build system.
+DH_VERBOSE = 1
+
+# see EXAMPLES in dpkg-buildflags(1) and read /usr/share/dpkg/*
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
+
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)           
+
+extras = debian/extras
+eudev_pkg = debian/eudev
+initramfs_base = usr/share/initramfs-tools
+
+
+# Paths
+CONFFLAGS = \
+	--with-rootprefix= \
+	--with-rootlibdir=/lib/$(DEB_HOST_MULTIARCH) \
+	--with-rootlibexecdir=/lib/udev \
+	--exec-prefix=/ \
+	--enable-split-usr
+
+# Dependencies and documentation
+CONFFLAGS += \
+	     --disable-selinux \
+	     --enable-libkmod \
+	     --enable-introspection \
+	     --enable-gtk-doc
+
+
+%:
+	dh $@ --with autoreconf,gir
+
+override_dh_autoreconf:
+	AM_OPTS=--copy LT_OPTS=--copy dh_autoreconf ./autogen.sh
+
+override_dh_auto_configure:
+	dh_auto_configure --builddirectory=build-deb \
+		-- $(CONFFLAGS)
+
+override_dh_auto_build:
+	dh_auto_build --builddirectory=build-deb
+
+override_dh_auto_clean:
+	dh_auto_clean --builddirectory=build-deb
+
+override_dh_auto_install:
+	dh_auto_install --builddirectory=build-deb
+
+override_dh_strip:
+	dh_strip --dbg-package=eudev-dbg
+
+override_dh_install:
+	# Remove various files
+	find debian/tmp/ -name '*.la' -delete
+	find debian/tmp/ -name '*.a' -delete
+	rm -f debian/tmp/sbin/udevadm
+	# Install
+	dh_install --fail-missing
+	#
+	# Most of the things below come from Debian's systemd package
+	# with minor changes.
+	#
+	# initramfs-tools support
+	install -D --mode=755 \
+		$(extras)/initramfs.hook \
+		$(eudev_pkg)/$(initramfs_base)/hooks/eudev
+	install -D --mode=755 \
+		$(extras)/initramfs.top \
+		$(eudev_pkg)/$(initramfs_base)/scripts/init-top/eudev
+	install -D --mode=755 \
+		$(extras)/initramfs.bottom \
+		$(eudev_pkg)/$(initramfs_base)/scripts/init-bottom/eudev
+	# Rules
+	install -D --mode=644 \
+		$(extras)/rules/* \
+		$(eudev_pkg)/lib/udev/rules.d/
+	# Various loadable scripts
+	install -D --mode=644 \
+		$(extras)/scripts-lib/* \
+		$(eudev_pkg)/lib/udev/
+	# Various executable scripts
+	install -D --mode=755 \
+		$(extras)/scripts-run/* \
+		$(eudev_pkg)/lib/udev/
+	# Blacklist for old framebuffer drivers
+	install -D --mode=644 \
+		$(extras)/fbdev-blacklist.conf \
+		$(eudev_pkg)/etc/modprobe.d/fbdev-blacklist.conf
+
+
+override_dh_installinit:
+	dh_installinit --no-start
+	dh_installinit --name=eudev-finish --no-start

@@ -1,0 +1,7 @@
+etc/udev/                                                                       
+lib/udev/*
+sbin/udevd
+bin/udevadm
+usr/share/man/man5/udev.conf.5
+usr/share/man/man7/udev.7
+usr/share/man/man8/*udev*.8
