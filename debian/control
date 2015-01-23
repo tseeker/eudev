@@ -27,7 +27,7 @@ Pre-Depends: debconf (>= 1.4.69) | debconf-2.0
 Depends: ${shlibs:Depends}, ${misc:Depends}, libeudev1 (= ${binary:Version})
 Conflicts: hotplug, udev
 Breaks: systemd
-Provides: udev
+Provides: udev (= 217)
 Description: Alternative /dev/ and hotplug management daemon
  eudev is a fork of systemd with the aim of isolating udev
  from any particular flavor of system initialization.
@@ -43,7 +43,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: libudev1
 Breaks: systemd
-Provides: libudev1
+Provides: libudev1 (= 217)
 Description: Alternative device information shared library
  eudev is a fork of systemd with the aim of isolating udev
  from any particular flavor of system initialization.
@@ -57,7 +57,7 @@ Architecture: linux-any
 Depends: libeudev1 (= ${binary:Version})
 Conflicts: libudev-dev
 Breaks: systemd
-Provides: libudev-dev
+Provides: libudev-dev (= 217)
 Description: libeudev development files
  eudev is a fork of systemd with the aim of isolating udev
  from any particular flavor of system initialization.
@@ -71,7 +71,7 @@ Priority: optional
 Architecture: linux-any
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Provides: libgudev-1.0-0
+Provides: libgudev-1.0-0 (= 217)
 Breaks: systemd
 Conflicts: libgudev-1.0-0
 Description: GObject-based wrapper library for eudev's libudev
@@ -86,7 +86,7 @@ Section: introspection
 Priority: optional
 Architecture: linux-any
 Depends: ${misc:Depends}, ${gir:Depends}
-Provides: gir1.2-gudev-1.0
+Provides: gir1.2-gudev-1.0 (= 217)
 Breaks: systemd
 Conflicts: gir1.2-gudev-1.0
 Description: libgeudev-1.0 introspection data
@@ -105,7 +105,7 @@ Depends: ${misc:Depends},
  gir1.2-geudev-1.0 (= ${binary:Version}),
  libglib2.0-dev,
  pkg-config
-Provides: libgudev-1.0-dev
+Provides: libgudev-1.0-dev (= 217)
 Breaks: systemd
 Conflicts: libgudev-1.0-dev
 Description: libgeudev-1.0 development files
